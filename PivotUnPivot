@@ -1,0 +1,63 @@
+-- Creamos la tabla de partida.
+
+CREATE TABLE TABLA
+(CAMPO1 NUMBER,
+ CAMPO2 NUMBER,
+ CAMPO3 VARCHAR2(10),
+ CAMPO4 VARCHAR2(10));
+ 
+INSERT INTO TABLA (CAMPO1, CAMPO2, CAMPO3, CAMPO4) VALUES (1,1,'valor1', 'contenido');
+INSERT INTO TABLA (CAMPO1, CAMPO2, CAMPO3, CAMPO4) VALUES (2,1,'valor1', 'contenido');
+INSERT INTO TABLA (CAMPO1, CAMPO2, CAMPO3, CAMPO4) VALUES (3,2,'valor1', 'contenido');
+INSERT INTO TABLA (CAMPO1, CAMPO2, CAMPO3, CAMPO4) VALUES (4,2,'valor2', 'contenido');
+INSERT INTO TABLA (CAMPO1, CAMPO2, CAMPO3, CAMPO4) VALUES (1,1,'valor1', 'contenido');
+INSERT INTO TABLA (CAMPO1, CAMPO2, CAMPO3, CAMPO4) VALUES (2,1,'valor1', 'contenido');
+INSERT INTO TABLA (CAMPO1, CAMPO2, CAMPO3, CAMPO4) VALUES (3,2,'valor1', 'contenido');
+INSERT INTO TABLA (CAMPO1, CAMPO2, CAMPO3, CAMPO4) VALUES (4,3,'valor2', 'contenido2');
+commit;
+
+-- Creamos la tabla pivotada:
+
+create table TABLA_P nologging as
+SELECT * 
+  FROM TABLA
+ PIVOT (max(campo2)    -- Campo agrupado pivotado 
+        FOR campo3       -- Campo cuyo contenido pasan a ser columnas 
+          IN ('valor1' as valor1, 'valor2' as valor2)  -- Nuevas columnas
+       )
+ORDER BY campo1, campo4;
+SELECT * FROM TABLA_P;
+
+-- Para versiones previas a la 11G se haría de la siguiente manera:
+
+SELECT campo1, campo4,
+       MAX(DECODE(campo3, 'valor1', campo2, null)) VALOR1,
+       MAX(DECODE(campo3, 'valor2', campo2, null)) VALOR2
+  FROM TABLA
+GROUP BY campo1, campo4
+ORDER BY campo1, campo4;
+
+-- EJEMPLO UNPIVOT:
+
+-- Ahora haremos el paso inverso, paso de columnas a filas:
+
+create table TABLA_U nologging as
+SELECT *
+  FROM TABLA_P
+UNPIVOT (campo6        -- Nuevo campo donde se reflejará el conteo de registros con el mismo campo1 y campo 2 
+            FOR campo5 -- Campo en el que se fusionan los campos VALOR1 y VALOR2
+                 IN (valor1, valor2));
+
+SELECT * FROM TABLA_U;
+
+-- Para versiones previas a la 11G se haría de la siguiente manera:
+
+SELECT CAMPO1, CAMPO4, 'VALOR1' CAMPO5, valor1 campo6
+  FROM TABLA_P
+ WHERE VALOR1 is not null
+UNION
+SELECT CAMPO1, CAMPO4, 'VALOR2' CAMPO5, valor2 campo6
+  FROM TABLA_P
+ WHERE VALOR2 is not null;
+ 
+ 
