@@ -1,0 +1,41 @@
+-- Sintaxis:
+
+LISTAGG(campo [,'delimitador']) WITHIN GROUP (sentencia_de_ordenacion) [OVER ([PARTITION BY  [,, ...]])]
+
+-- Creo tabla y registros para el ejemplo
+
+CREATE TABLE tabla
+(nombre VARCHAR2(100),
+ puesto VARCHAR2(100),
+ cantidad NUMBER);
+
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (1,    'Luis',     'Puesto 1');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (1,    'Carlos',   'Puesto 2');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (2,    'Elena',    'Puesto 1');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (NULL, 'Luisa',    'Puesto 2');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (NULL, 'Jacobo',   'Puesto 1');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (1,    'Carmen',   'Puesto 2');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (2,    'Mercedes', 'Puesto 1');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (1,    'Pepe',     'Puesto 2');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (1,    'Amelia',   'Puesto 1');
+INSERT INTO tabla (cantidad, nombre, puesto) VALUES (3,    'Jose',     'Puesto 3');
+
+commit;
+
+-- Uso sentencia Listagg:
+SELECT LISTAGG(nombre, '; ') WITHIN GROUP (ORDER BY nombre) over (partition by puesto) LISTA_NOMBRES,
+       puesto,
+       nombre
+FROM tabla t
+ORDER BY puesto, nombre;
+
+-- Segundo ejemplo:
+
+SELECT LISTAGG(nombre, '; ') WITHIN GROUP (ORDER BY nombre) over (partition by puesto) LISTA_NOMBRES,
+       puesto,
+       nombre
+FROM tabla t
+ORDER BY puesto, nombre;
+
+
+
