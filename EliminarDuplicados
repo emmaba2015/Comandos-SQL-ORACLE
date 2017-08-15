@@ -1,0 +1,37 @@
+-- Ejemplo de eliminación sencilla de registros duplicados en una tabla Oracle:
+-- Tabla creada y usada para el ejemplo:
+
+create table tabla (ID number, columna1 varchar2(20), columna2 varchar2(20));
+
+-- Borrar repetidos teniendo clave
+
+DELETE FROM tabla
+ WHERE ID not in
+      (SELECT MIN(ID)
+         FROM tabla
+        GROUP BY columna1, columna2);
+
+-- Borrar repetidos sin tener clave
+
+DELETE FROM tabla
+ WHERE rowid not in
+       (SELECT MIN(rowid)
+          FROM tabla
+         GROUP BY columna1, columna2);
+         
+-- Otra alternativa podría ser, aunque esta borraría sólo un regitro. Habría, que tener cuidado si hay más de un duplicado. 
+   Es algo más eficiente:
+
+DELETE FROM tabla
+ WHERE rowid in
+      (SELECT MIN(rowid)
+         FROM tabla a
+        GROUP BY columna1, columna2
+       HAVING count(*) > 1);
+# Por último, para comprobar los duplicado podríamos lanzar la siguiente sentencia:
+
+SQL> SELECT columna1, columna2, count(*)
+          FROM tabla
+         GROUP BY columna1, columna2
+        HAVING count (*) > 1;       
+        
