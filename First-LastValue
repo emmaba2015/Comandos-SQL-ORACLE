@@ -1,0 +1,75 @@
+-- SINTAXIS:
+
+función (<expresion_valor_1>  [,<offset>  [, <valor_por_defecto> ]]) OVER
+    ([PARTITION BY <expresion_valor_3> [,<expresion_valor_4>, ...]])
+    ORDER BY <expresion_valor_2> [ASC|DESC] 
+    [NULLS FIRST | NULLS LAST] [,…]
+    [ventana])
+siendo ventana:
+
+[ROWS|RANGE] inicio AND fin
+
+-- Ejemplo 1:
+
+CREATE TABLE tabla
+(cantidad NUMBER,
+ nombre VARCHAR2(100));
+
+INSERT INTO tabla (cantidad, nombre) VALUES (1,'Luis');
+INSERT INTO tabla (cantidad, nombre) VALUES (1,'Carlos');
+INSERT INTO tabla (cantidad, nombre) VALUES (2,'Elena');
+INSERT INTO tabla (cantidad, nombre) VALUES (NULL, 'Luisa');
+INSERT INTO tabla (cantidad, nombre) VALUES (NULL,'Jacobo');
+INSERT INTO tabla (cantidad, nombre) VALUES (1,'Carmen');
+INSERT INTO tabla (cantidad, nombre) VALUES (2,'Mercedes');
+INSERT INTO tabla (cantidad, nombre) VALUES (1,'Pepe');
+INSERT INTO tabla (cantidad, nombre) VALUES (1,'Amelia');
+INSERT INTO tabla (cantidad, nombre) VALUES (3,'Jose');
+
+commit;
+SELECT cantidad,
+       nombre,
+       FIRST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre asc) as first_value_asc,
+       FIRST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre desc) as first_value_desc,
+       FIRST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre asc RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as first_value_rango_completo,
+       LAST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre asc  RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_value_rango_completo
+  FROM tabla
+ ORDER by cantidad, nombre;
+ 
+-- APARECE RESULTADOS ALEATORIOS:
+
+-- Puede ser debido a ordenar de una forma no determinística, por lo que Oracle podría tomar de manera aleatoria un registro u otro.
+
+-- Ejemplo 2:
+
+SELECT cantidad,
+       nombre,
+       FIRST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY cantidad) as first_value
+  FROM tabla
+ ORDER by cantidad, nombre;
+ 
+-- NO SE OBTIENEN LOS VALORES ESPERADOS:
+
+-- Ejemplo 3:
+
+SELECT cantidad,
+       nombre,
+       FIRST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre asc) as first_value_asc,
+       FIRST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre desc) as first_value_desc,
+       LAST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre asc) AS last_value_asc,
+       LAST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre desc) AS last_value_desc,
+       FIRST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre asc RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as first_value_rango_completo,
+       LAST_VALUE(nombre) IGNORE NULLS
+         OVER (PARTITION BY cantidad ORDER BY nombre asc  RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_value_rango_completo
+  FROM tabla
+ ORDER by cantidad, nombre;
