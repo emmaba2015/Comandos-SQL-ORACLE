@@ -1,0 +1,45 @@
+-- SINTAXIS:
+
+función () OVER
+    ([PARTITION BY <expresion_valor_2> [,<expresion_valor_3>, ...]])
+    ORDER BY <expresion_valor_1> [ASC|DESC] 
+    [NULLS FIRST | NULLS LAST] [,…])
+
+-- EJEMPLO:
+
+CREATE TABLE tabla
+(clave NUMBER,
+ cantidad NUMBER,
+ bloque NUMBER);
+ 
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (1, 1, 1);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (2, 1, 1);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (3, 2, 1);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (4, 2, 1);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (5, 2, 1);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (6, 4, 1);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (7, 5, 2);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (9, 7, 2);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (10,8, 2);
+INSERT INTO tabla (clave, cantidad, bloque) VALUES (11,9, 2);
+commit;
+
+SELECT clave, cantidad, bloque,
+       ROW_NUMBER() OVER (order by clave) fn_row_number,
+       ROW_NUMBER() OVER (PARTITION BY bloque order by clave) fn_row_number,
+       RANK() OVER (PARTITION BY bloque order by cantidad) fn_rank,
+       DENSE_RANK() OVER (PARTITION BY bloque order by cantidad) fn_dense_rank
+ FROM TABLA
+ORDER BY bloque, clave;
+
+Utilización de la función ROW_NUMBER, para realizar paginaciones.
+EJEMPLO:
+
+SELECT  *
+  FROM (SELECT clave, cantidad, bloque,
+        	      ROW_NUMBER() OVER (order by clave) elemento
+               FROM tabla
+         ORDER BY elemento, clave)
+  WHERE elemento BETWEEN 3 and 8;
+  
+  
