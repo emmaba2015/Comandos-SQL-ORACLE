@@ -1,0 +1,24 @@
+-- La función TRANSLATE reemplaza una secuencia de caracteres en una cadena con otra sencuencia de carateres. Sin embargo, esta reemplaza 
+un carácter a la vez. Por ejemplo, reemplaza el primer carácter de CADENA_A_REEMPLAZAR con el primer carácter de CADENA_DE_REEMPLAZO, 
+luego la función reemplazara el segundo carácter de CADENA_A_REEMPLAZAR con el segundo carácter de CADENA_DE_REEMPLAZO y así sucesivamente.
+
+-- Ejemplos:
+
+Este ejemplo quita los caracteres que no sean de tipo numerico
+SELECT TRANSLATE('2KRW229','0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0123456789') "Translate example" FROM DUAL; 
+-- Translate example
+-- 2229
+
+SELECT TRANSLATE(‘1Bach23’, ‘123’, ‘456’) FROM DUAL;       
+-- 4Bach56
+SELECT TRANSLATE (‘222Wagner’, ‘2Ja’, ‘8Go’) FROM DUAL;
+-- ??
+
+-- Primero se visualiza el resultado de la función TRANSLATE
+select TRANSLATE(SOCIETARIO.ORDEN, '%N?%', '%N°%') TRANSLATE
+from ESQUEMA.SOCIETARIO 
+WHERE SOCIETARIO.ORDEN LIKE '%N?%'; 
+
+-- Se aplica la modificación
+UPDATE ESQUEMA.SOCIETARIO SET SOCIETARIO.ORDEN = TRANSLATE(SOCIETARIO.ORDEN, '%N?%', '%N°%')
+WHERE SOCIETARIO.ORDEN LIKE '%N?%';
