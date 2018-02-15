@@ -1,0 +1,13 @@
+-- La función UPPER convierte todas las letras a mayúsculas de la cadena pasada por parámetro. Si en la cadena existen caracteres que 
+no son letras, ellos no se ven afectados por esta función.
+-- Sintaxis:
+UPPER(CADENA)
+
+-- CADENA es la cadena a convertir en mayusculas.
+
+-- Ejemplos:
+
+SELECT UPPER(‘Wachet auf, ruft uns die Stimme’) FROM DUAL;    
+-–Devuelve “WACHET AUF, RUFT UNS DIE STIMME”
+SELECT UPPER(‘ride of the valkyries’) FROM DUAL;            
+-–Devuelve “RIDE OF THE VALKYRIES”
