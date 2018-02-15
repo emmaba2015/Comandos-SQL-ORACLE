@@ -1,0 +1,23 @@
+-- La función TRIM remueve todos los caracteres especificados al inicio y al final de la cadena.
+
+-- Sintasis:
+-- TRIM([LEADING | TRAILING | BOTH [CADENA_A_REMOVER]] CADENA)
+
+-- LEADING remueve los caracteres especificados al inicio de la cadena.
+
+-- TRAILING remueve los caracteres especificados al final de la cadena.
+
+-- BOTH remueve los caracteres especificados al ambos lados de la cadena, al inicio y al final.
+
+Ejemplos:
+
+SELECT TRIM(‘   Examen   ‘) FROM DUAL;                       
+-–Devuelve “Examen”
+SELECT TRIM(‘ ‘ FROM ‘   Examen   ‘) FROM DUAL;              
+-–Devuelve “Examen”
+SELECT TRIM(LEADING ‘0’ FROM ‘000Testing’) FROM DUAL;       
+-–Devuelve “Testing”
+SELECT TRIM(TRAILING ‘1’ FROM ‘Testing111’) FROM DUAL;      
+-–Devuelve “Testing”
+SELECT TRIM(BOTH ‘1’ FROM ‘123Testing111’) FROM DUAL;       
+-–Devuelve “23Testing”
