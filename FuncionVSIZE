@@ -1,0 +1,18 @@
+-- La función VSIZE devuelve el numero de bytes contenidos en la representación interna de una expresión. La sintaxis es la siguiente:
+
+VSIZE(EXPRESION)
+
+-- EXPRESION es la cadena a evaluar.
+
+-- Ejemplos:
+
+SELECT VSIZE(‘Wachet auf, ruft uns die Stimme’) FROM DUAL;    
+-–Devuelve 31
+SELECT VSIZE (‘RIDE OF THE VALKYRIES’) FROM DUAL;           
+-–Devuelve 21
+SELECT VSIZE (NULL) FROM DUAL;                              
+-–Devuelve <NULL>
+SELECT VSIZE (”) FROM DUAL;                               
+-–Devuelve <NULL>
+SELECT VSIZE (‘ ‘) FROM DUAL;                               
+-–Devuelve “ “ (Espacio vacio)
