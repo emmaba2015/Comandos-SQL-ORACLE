@@ -1,0 +1,33 @@
+-- 1. Convert the SCN to Timestamp
+
+SQL> select scn_to_timestamp(2011955) from dual;
+
+SCN_TO_TIMESTAMP(2011955)
+-----------------------------------------------------
+05-SEP-18 12.46.20.000000000 PM
+
+-- 2. Convert the Timestamp to SCN
+
+SQL> select timestamp_to_scn(to_timestamp('05-09-2018 12:46:21','dd-mm-yyyy hh24:mi:ss')) scn from dual;
+
+SCN
+----------
+2011955
+
+
+-- 3. Normal 10G onward syntax
+
+select current_scn from v$database;
+
+CURRENT_SCN
+-------------------
+1090009835662
+
+-- 4. To get a SCN from a timestamp
+
+SELECT TIMESTAMP_TO_SCN(order_date) FROM orders
+   WHERE order_id = 5000;
+ 
+TIMESTAMP_TO_SCN(ORDER_DATE)
+----------------------------
+574107
